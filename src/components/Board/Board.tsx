@@ -41,11 +41,15 @@ export function Board() {
 
           {currentQuestion && (
             <div className="board-frame">
+              <div className="question-header">
+                <p className="question-header-text">
+                  {currentQuestion.id}
+                </p>
+              </div>
               <div className="answer-grid">
-                {currentQuestion.answers.map((answer, index) => (
+                {currentQuestion.answers.map((answer) => (
                   <AnswerSlot
                     key={answer.id}
-                    number={index + 1}
                     answer={answer}
                     revealed={state.revealedAnswerIds.has(answer.id)}
                   />
