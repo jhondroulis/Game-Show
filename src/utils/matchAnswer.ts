@@ -1,0 +1,106 @@
+import type { Answer } from '../types';
+
+/**
+ * Normalize a string for comparison
+ * - Convert to lowercase
+ * - Trim whitespace
+ * - Remove extra spaces
+ */
+function normalizeString(str: string): string {
+  return str.toLowerCase().trim().replace(/\s+/g, ' ');
+}
+
+/**
+ * Check if input matches an answer (including aliases)
+ * Returns the matching answer or null
+ */
+export function matchAnswer(input: string, answers: Answer[]): Answer | null {
+  const normalized = normalizeString(input);
+  
+  if (!normalized) {
+    return null;
+  }
+  
+  // First pass: exact match on answer text or aliases
+  for (const answer of answers) {
+    const answerNormalized = normalizeString(answer.text);
+    
+    if (normalized === answerNormalized) {
+      return answer;
+    }
+    
+    // Check aliases
+    for (const alias of answer.aliases) {
+      if (normalized === normalizeString(alias)) {
+        return answer;
+      }
+    }
+  }
+  
+  // Second pass: partial match (input contains answer or answer contains input)
+  for (const answer of answers) {
+    const answerNormalized = normalizeString(answer.text);
+    
+    if (normalized.includes(answerNormalized) || answerNormalized.includes(normalized)) {
+      return answer;
+    }
+    
+    // Check aliases for partial match
+    for (const alias of answer.aliases) {
+      const aliasNormalized = normalizeString(alias);
+      if (normalized.includes(aliasNormalized) || aliasNormalized.includes(normalized)) {
+        return answer;
+      }
+    }
+  }
+  
+  return null;
+}
+
+/**
+ * Get all potential matches (for preview/suggestion)
+ */
+export function findPotentialMatches(input: string, answers: Answer[]): Answer[] {
+  const normalized = normalizeString(input);
+  
+  if (!normalized) {
+    return [];
+  }
+  
+  const matches: Answer[] = [];
+  
+  for (const answer of answers) {
+    const answerNormalized = normalizeString(answer.text);
+    
+    // Check answer text
+    if (
+      normalized === answerNormalized ||
+      normalized.includes(answerNormalized) ||
+      answerNormalized.includes(normalized)
+    ) {
+      matches.push(answer);
+      continue;
+    }
+    
+    // Check aliases
+    let aliasMatch = false;
+    for (const alias of answer.aliases) {
+      const aliasNormalized = normalizeString(alias);
+      if (
+        normalized === aliasNormalized ||
+        normalized.includes(aliasNormalized) ||
+        aliasNormalized.includes(normalized)
+      ) {
+        aliasMatch = true;
+        break;
+      }
+    }
+    
+    if (aliasMatch) {
+      matches.push(answer);
+    }
+  }
+  
+  return matches;
+}
+
