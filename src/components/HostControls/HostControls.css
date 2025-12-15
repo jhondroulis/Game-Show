@@ -10,9 +10,12 @@
   box-shadow: 0 8px 40px rgba(0, 0, 0, 0.8);
   max-width: 900px;
   width: 90%;
-  height: 300px;
+  min-height: 300px;
+  max-height: 80vh;
   z-index: 1000;
   backdrop-filter: blur(10px);
+  display: flex;
+  flex-direction: column;
 }
 
 .host-controls.collapsed {
@@ -116,6 +119,11 @@
 
 .control-row.answer-input-row {
   margin-top: 10px;
+}
+
+.control-row.action-buttons-row {
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
 
 .control-input,
@@ -261,6 +269,9 @@
   flex-direction: column;
   gap: 10px;
   margin-bottom: 20px;
+  max-height: 50vh;
+  overflow-y: auto;
+  padding-right: 10px;
 }
 
 .preview-question {

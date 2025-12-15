@@ -27,6 +27,8 @@ export function ExcelUpload({ onQuestionsLoaded }: ExcelUploadProps) {
     }
 
     if (result.questions && result.preview) {
+      console.log('[ExcelUpload] Parsed questions:', result.questions.length, result.questions.map(q => q.id));
+      console.log('[ExcelUpload] Preview questions:', result.preview.questionCount, result.preview.questions);
       setPendingQuestions(result.questions);
       setPreview(result.preview);
     }
@@ -79,14 +81,26 @@ export function ExcelUpload({ onQuestionsLoaded }: ExcelUploadProps) {
               <p className="preview-stat">
                 <strong>{preview.answerCount}</strong> total answers
               </p>
+              <p className="preview-stat">
+                Showing <strong>{preview.questions.length}</strong> questions in preview
+              </p>
             </div>
 
             <div className="preview-questions">
-              {preview.questions.map((q: any) => (
-                <div key={q.id} className="preview-question">
-                  <strong>{q.id}:</strong> {q.text} ({q.answerCount} answers)
+              {preview.questions.length > 0 ? (
+                preview.questions.map((q: any) => (
+                  <div key={q.id} className="preview-question">
+                    <strong>{q.id}:</strong> {q.text} ({q.answerCount} answers)
+                  </div>
+                ))
+              ) : (
+                <div className="preview-question">No questions found</div>
+              )}
+              {preview.questionCount !== preview.questions.length && (
+                <div className="preview-question" style={{ color: '#fca5a5', fontStyle: 'italic' }}>
+                  Note: Showing {preview.questions.length} of {preview.questionCount} questions
                 </div>
-              ))}
+              )}
             </div>
 
             <div className="preview-actions">

@@ -13,9 +13,12 @@ export function QuestionSelect({
   onSelect,
   disabled 
 }: QuestionSelectProps) {
+  // Debug: Log questions count
+  console.log('[QuestionSelect] Total questions:', questions.length, questions.map(q => q.id));
+  
   return (
     <div className="control-group">
-      <label className="control-label">Select Question</label>
+      <label className="control-label">Select Question ({questions.length} available)</label>
       <select
         className="control-select"
         value={currentQuestionId || ''}

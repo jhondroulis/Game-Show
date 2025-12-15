@@ -110,7 +110,7 @@ export function HostControls() {
               />
             </div>
 
-            <div className="control-row">
+            <div className="control-row action-buttons-row">
               <button 
                 className="control-button"
                 onClick={handleRevealAll}

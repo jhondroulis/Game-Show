@@ -40,7 +40,11 @@ export async function parseExcelFile(file: File): Promise<ParseResult> {
     }
     
     const questions = convertToQuestions(jsonData);
+    console.log('[excelParser] Total rows parsed:', jsonData.length);
+    console.log('[excelParser] Unique questionIds found:', new Set(jsonData.map(r => r.questionId.toString().trim())).size);
+    console.log('[excelParser] Questions created:', questions.length, questions.map(q => q.id));
     const preview = generatePreview(questions);
+    console.log('[excelParser] Preview questions count:', preview.questionCount, 'Preview array length:', preview.questions.length);
     
     return {
       success: true,

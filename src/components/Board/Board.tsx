@@ -104,11 +104,10 @@ export function Board() {
                   />
                 ))}
               </div>
+              {state.phase === 'playing' && state.roundStrikes > 0 && (
+                <StrikeIndicator strikes={state.roundStrikes} />
+              )}
             </div>
-          )}
-
-          {state.phase === 'playing' && state.roundStrikes > 0 && (
-            <StrikeIndicator strikes={state.roundStrikes} />
           )}
 
           {state.phase === 'steal' && (
