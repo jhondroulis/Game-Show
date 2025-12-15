@@ -47,9 +47,9 @@ export function AnswerInput({
   };
 
   return (
-    <div className="control-group" style={{ position: 'relative' }}>
+    <div className="control-group answer-input-group" style={{ position: 'relative' }}>
       <label className="control-label">Enter Answer</label>
-      <form onSubmit={handleSubmit} style={{ display: 'flex', gap: '10px' }}>
+      <form onSubmit={handleSubmit} style={{ display: 'flex', gap: '10px', width: '100%' }}>
         <input
           type="text"
           className="control-input"
@@ -58,6 +58,7 @@ export function AnswerInput({
           placeholder="Type answer..."
           disabled={disabled}
           autoComplete="off"
+          style={{ flex: 1 }}
         />
         <button 
           type="submit" 

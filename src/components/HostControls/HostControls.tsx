@@ -88,7 +88,7 @@ export function HostControls() {
       </div>
 
       <div className="controls-content">
-        <div className="control-row">
+        <div className="control-row first-control-row">
           <ExcelUpload onQuestionsLoaded={handleQuestionsLoaded} />
           
           <QuestionSelect
@@ -101,7 +101,7 @@ export function HostControls() {
 
         {(state.phase === 'playing' || state.phase === 'steal') && currentQuestion && (
           <>
-            <div className="control-row">
+            <div className="control-row answer-input-row">
               <AnswerInput
                 answers={currentQuestion.answers}
                 revealedAnswerIds={state.revealedAnswerIds}
