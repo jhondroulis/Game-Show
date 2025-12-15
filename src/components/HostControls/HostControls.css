@@ -10,6 +10,7 @@
   box-shadow: 0 8px 40px rgba(0, 0, 0, 0.8);
   max-width: 900px;
   width: 90%;
+  height: 300px;
   z-index: 1000;
   backdrop-filter: blur(10px);
 }
@@ -55,6 +56,8 @@
   display: flex;
   flex-direction: column;
   gap: 15px;
+  justify-content: flex-start;
+  align-items: flex-start;
 }
 
 .control-row {
@@ -62,11 +65,16 @@
   gap: 10px;
   align-items: flex-start;
   flex-wrap: wrap;
+  margin-top: 25px;
+  margin-bottom: 25px;
 }
 
 .control-group {
   flex: 1;
   min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .control-label {
@@ -153,6 +161,12 @@
   font-size: 14px;
   font-weight: 600;
   transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
 
 .file-button:hover {
@@ -237,4 +251,3 @@
   font-size: 14px;
   margin-top: 10px;
 }
-
