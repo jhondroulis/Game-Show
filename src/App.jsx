@@ -11,6 +11,7 @@ import './App.css';
 function GameContent() {
   const { state } = useGame();
   const { play } = useSound();
+  const previousRevealCountRef = useRef(0);
 
   // Sound effects based on phase changes
   useEffect(() => {
@@ -19,19 +20,21 @@ function GameContent() {
     }
   }, [state.phase, play]);
 
-  // Sound effect for strikes
+  // Sound effect for strikes (plays in both playing and steal phases)
   useEffect(() => {
-    if (state.roundStrikes > 0 && state.phase === 'playing') {
+    if (state.roundStrikes > 0) {
       play('buzzer');
     }
-  }, [state.roundStrikes, state.phase, play]);
+  }, [state.roundStrikes, play]);
 
-  // Sound effect for reveals
+  // Sound effect for reveals (only when new answers are shown)
   useEffect(() => {
-    const revealCount = state.revealedAnswerIds.size;
-    if (revealCount > 0 && state.phase !== 'roundResult') {
+    const currentCount = state.revealedAnswerIds.size;
+    const previousCount = previousRevealCountRef.current;
+    if (currentCount > previousCount && state.phase !== 'roundResult') {
       play('ding');
     }
+    previousRevealCountRef.current = currentCount;
   }, [state.revealedAnswerIds.size, state.phase, play]);
 
   if (state.phase === 'gameOver') {

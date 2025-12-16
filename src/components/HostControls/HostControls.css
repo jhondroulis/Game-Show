@@ -117,6 +117,21 @@
   margin-top: auto;
 }
 
+.tiny-hint {
+  color: #94a3b8;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  margin-left: 8px;
+  align-self: center;
+  white-space: nowrap;
+}
+
+.tiny-hint strong {
+  color: #fff;
+  font-weight: 700;
+}
+
 .control-row.answer-input-row {
   margin-top: 10px;
 }
@@ -178,6 +193,22 @@
 
 .control-button.success:hover {
   background: #16a34a;
+}
+
+.control-button.team-a {
+  background: #005EB8;
+}
+
+.control-button.team-a:hover {
+  background: #004a94;
+}
+
+.control-button.team-b {
+  background: #002663;
+}
+
+.control-button.team-b:hover {
+  background: #001d4a;
 }
 
 .control-button:disabled {

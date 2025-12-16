@@ -1,27 +1,14 @@
 import React, { useState } from 'react';
 import { useGame } from '../../context/useGame';
 import { matchAnswer } from '../../utils/matchAnswer';
-import { ExcelUpload } from './ExcelUpload';
 import { QuestionSelect } from './QuestionSelect';
 import { AnswerInput } from './AnswerInput';
-import { saveQuestionsToStorage } from '../../utils/questionsStorage';
 import './HostControls.css';
 
 export function HostControls() {
   const { state, dispatch, getCurrentQuestion } = useGame();
   const [collapsed, setCollapsed] = useState(false);
-  const [persistWarning, setPersistWarning] = useState('');
   const currentQuestion = getCurrentQuestion();
-
-  const handleQuestionsLoaded = (questions) => {
-    const persisted = saveQuestionsToStorage(questions);
-    setPersistWarning(
-      persisted
-        ? ''
-        : 'Could not save questions to this browser (they may be lost on reload).'
-    );
-    dispatch({ type: 'LOAD_QUESTIONS', payload: questions });
-  };
 
   const handleQuestionSelect = (questionId) => {
     if (questionId) {
@@ -96,16 +83,19 @@ export function HostControls() {
       </div>
 
       <div className="controls-content">
-        {persistWarning && <div className="info-message">{persistWarning}</div>}
         <div className="control-row first-control-row">
-          <ExcelUpload onQuestionsLoaded={handleQuestionsLoaded} />
-          
           <QuestionSelect
             questions={state.questions}
             currentQuestionId={state.currentQuestionId}
             onSelect={handleQuestionSelect}
             disabled={state.phase === 'playing' || state.phase === 'steal'}
           />
+          {state.phase === 'setup' && (
+            <div className="tiny-hint">
+              Next round starts:&nbsp;
+              <strong>{state.teamNames[state.roundStartingTeam]}</strong>
+            </div>
+          )}
         </div>
 
         {(state.phase === 'playing' || state.phase === 'steal') && currentQuestion && (
@@ -130,16 +120,16 @@ export function HostControls() {
               {state.phase === 'steal' && (
                 <React.Fragment>
                   <button 
-                    className="control-button success"
-                    onClick={() => handleAwardPot(state.activeTeam)}
-                  >
-                    Award to {state.teamNames[state.activeTeam]} (Steal Success)
-                  </button>
-                  <button 
-                    className="control-button"
+                    className={`control-button team-${state.stealOriginTeam.toLowerCase()}`}
                     onClick={() => handleAwardPot(state.stealOriginTeam)}
                   >
                     Award to {state.teamNames[state.stealOriginTeam]} (Steal Failed)
+                  </button>
+                  <button 
+                    className={`control-button team-${state.activeTeam.toLowerCase()}`}
+                    onClick={() => handleAwardPot(state.activeTeam)}
+                  >
+                    Award to {state.teamNames[state.activeTeam]} (Steal Success)
                   </button>
                 </React.Fragment>
               )}
@@ -147,7 +137,7 @@ export function HostControls() {
               {state.phase === 'playing' && (
                 <React.Fragment>
                   <button 
-                    className="control-button success"
+                    className={`control-button team-${state.activeTeam.toLowerCase()}`}
                     onClick={() => handleAwardPot(state.activeTeam)}
                   >
                     Award Pot to {state.teamNames[state.activeTeam]}

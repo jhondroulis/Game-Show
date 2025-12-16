@@ -1,14 +1,13 @@
-import React, { useReducer } from 'react';
-import PropTypes from 'prop-types';
-import { GameContext } from './gameContext';
-import { HARDCODED_QUESTIONS } from '../data/questions';
+import React, { createContext, useContext, useReducer } from 'react';
+import type { ReactNode } from 'react';
+import type { GameState, GameAction, Question } from '../types';
+import { loadQuestionsFromStorage } from '../utils/questionsStorage';
 
-const initialState = {
+// Initial state
+const initialState: GameState = {
   phase: 'setup',
   questions: [],
   currentQuestionId: null,
-  // Which team should start the next round. This toggles A -> B -> A...
-  roundStartingTeam: 'A',
   activeTeam: 'A',
   teamTotals: { A: 0, B: 0 },
   teamNames: { A: 'Team A', B: 'Team B' },
@@ -18,15 +17,18 @@ const initialState = {
   stealOriginTeam: null,
 };
 
-function initGameState(baseState) {
-  // Use hardcoded questions by default
+function initGameState(baseState: GameState): GameState {
+  const savedQuestions = loadQuestionsFromStorage();
+  if (!savedQuestions || savedQuestions.length === 0) return baseState;
+
   return {
     ...baseState,
-    questions: HARDCODED_QUESTIONS,
+    questions: savedQuestions,
   };
 }
 
-function gameReducer(state, action) {
+// Reducer function
+function gameReducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
     case 'LOAD_QUESTIONS':
       return {
@@ -49,8 +51,6 @@ function gameReducer(state, action) {
         ...state,
         currentQuestionId: action.payload,
         phase: 'playing',
-        // Always start the round with the pre-determined starting team.
-        activeTeam: state.roundStartingTeam,
         roundPot: 0,
         roundStrikes: 0,
         revealedAnswerIds: new Set(),
@@ -64,9 +64,10 @@ function gameReducer(state, action) {
         roundPot: state.roundPot + action.payload.points,
       };
 
-    case 'ADD_STRIKE': {
+    case 'ADD_STRIKE':
       const newStrikes = state.roundStrikes + 1;
       if (newStrikes >= 3) {
+        // Switch to steal phase
         return {
           ...state,
           roundStrikes: newStrikes,
@@ -79,9 +80,9 @@ function gameReducer(state, action) {
         ...state,
         roundStrikes: newStrikes,
       };
-    }
 
     case 'SWITCH_TO_STEAL':
+      // Manual switch to steal (if needed)
       return {
         ...state,
         phase: 'steal',
@@ -89,19 +90,19 @@ function gameReducer(state, action) {
         activeTeam: state.activeTeam === 'A' ? 'B' : 'A',
       };
 
-    case 'REVEAL_ALL': {
-      const currentQuestion = state.questions.find((q) => q.id === state.currentQuestionId);
+    case 'REVEAL_ALL':
+      // Reveal all unrevealed answers
+      const currentQuestion = state.questions.find(q => q.id === state.currentQuestionId);
       if (!currentQuestion) return state;
-
-      const allAnswerIds = new Set(currentQuestion.answers.map((a) => a.id));
+      
+      const allAnswerIds = new Set(currentQuestion.answers.map(a => a.id));
       return {
         ...state,
         revealedAnswerIds: allAnswerIds,
         phase: 'roundResult',
       };
-    }
 
-    case 'AWARD_POT': {
+    case 'AWARD_POT':
       const winner = action.payload;
       return {
         ...state,
@@ -111,13 +112,8 @@ function gameReducer(state, action) {
         },
         phase: 'roundResult',
       };
-    }
 
     case 'NEXT_ROUND':
-      // Toggle who starts each new round, independent of any steal switches.
-      // (activeTeam can change during a round; roundStartingTeam represents the
-      // start-of-round team for alternation purposes.)
-      const nextStartingTeam = state.roundStartingTeam === 'A' ? 'B' : 'A';
       return {
         ...state,
         phase: 'setup',
@@ -126,8 +122,7 @@ function gameReducer(state, action) {
         roundStrikes: 0,
         revealedAnswerIds: new Set(),
         stealOriginTeam: null,
-        roundStartingTeam: nextStartingTeam,
-        activeTeam: nextStartingTeam,
+        activeTeam: 'A', // Reset to team A for next round
       };
 
     case 'GAME_OVER':
@@ -139,8 +134,8 @@ function gameReducer(state, action) {
     case 'NEW_GAME':
       return {
         ...initialState,
-        questions: state.questions,
-        teamNames: state.teamNames,
+        questions: state.questions, // Keep loaded questions
+        teamNames: state.teamNames, // Keep team names
       };
 
     default:
@@ -148,11 +143,22 @@ function gameReducer(state, action) {
   }
 }
 
-export function GameProvider({ children }) {
+// Context
+interface GameContextType {
+  state: GameState;
+  dispatch: React.Dispatch<GameAction>;
+  getCurrentQuestion: () => Question | undefined;
+  getUnrevealedAnswers: () => number;
+}
+
+const GameContext = createContext<GameContextType | undefined>(undefined);
+
+// Provider component
+export function GameProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(gameReducer, initialState, initGameState);
 
   const getCurrentQuestion = () => {
-    return state.questions.find((q) => q.id === state.currentQuestionId);
+    return state.questions.find(q => q.id === state.currentQuestionId);
   };
 
   const getUnrevealedAnswers = () => {
@@ -171,7 +177,12 @@ export function GameProvider({ children }) {
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>;
 }
 
-GameProvider.propTypes = {
-  children: PropTypes.node.isRequired,
-};
+// Custom hook
+export function useGame() {
+  const context = useContext(GameContext);
+  if (!context) {
+    throw new Error('useGame must be used within a GameProvider');
+  }
+  return context;
+}
 

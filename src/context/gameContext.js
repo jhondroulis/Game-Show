@@ -28,6 +28,7 @@ import { createContext } from 'react';
  * @property {Phase} phase
  * @property {Question[]} questions
  * @property {string|null} currentQuestionId
+ * @property {Team} roundStartingTeam
  * @property {Team} activeTeam
  * @property {{A: number, B: number}} teamTotals
  * @property {{A: string, B: string}} teamNames

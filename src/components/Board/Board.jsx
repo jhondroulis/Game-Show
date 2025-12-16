@@ -56,7 +56,7 @@ export function Board() {
                   />
                 ))}
               </div>
-              {state.phase === 'playing' && state.roundStrikes > 0 && (
+              {(state.phase === 'playing' || state.phase === 'steal') && state.roundStrikes > 0 && (
                 <StrikeIndicator strikes={state.roundStrikes} />
               )}
             </div>

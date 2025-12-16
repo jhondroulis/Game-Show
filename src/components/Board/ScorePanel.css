@@ -11,13 +11,13 @@
 }
 
 .score-panel.team-a {
-  border-color: #ef4444;
-  background: linear-gradient(135deg, #991b1b 0%, #dc2626 100%);
+  border-color: #005EB8;
+  background: linear-gradient(135deg, #004a94 0%, #005EB8 100%);
 }
 
 .score-panel.team-b {
-  border-color: #3b82f6;
-  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+  border-color: #002663;
+  background: linear-gradient(135deg, #001d4a 0%, #002663 100%);
 }
 
 .team-name-input {
