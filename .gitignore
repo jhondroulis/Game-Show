@@ -28,9 +28,7 @@ dist-ssr
 *.sw?
 
 # Sound files (user-provided)
-public/sounds/*.mp3
-public/sounds/*.wav
-public/sounds/*.ogg
+
 !public/sounds/README.md
 
 # Excel files (user content)
