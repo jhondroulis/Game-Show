@@ -1,8 +1,9 @@
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { GameProvider, useGame } from './context/GameContext';
 import { Board } from './components/Board/Board';
 import { GameOver } from './components/GameOver/GameOver';
 import { HostControls } from './components/HostControls/HostControls';
+import { SplashScreen } from './components/SplashScreen/SplashScreen';
 import { useSound } from './hooks/useSound';
 import './App.css';
 
@@ -50,10 +51,53 @@ function GameContent() {
 }
 
 function App() {
+  const [stage, setStage] = useState<'splash' | 'transition' | 'app'>('splash');
+  const [appVisible, setAppVisible] = useState(false);
+  const transitionTimeoutRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (transitionTimeoutRef.current !== null) {
+        window.clearTimeout(transitionTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  const handleStart = () => {
+    const prefersReducedMotion =
+      window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
+
+    if (prefersReducedMotion) {
+      setStage('app');
+      setAppVisible(true);
+      return;
+    }
+
+    setStage('transition');
+    setAppVisible(false);
+
+    window.requestAnimationFrame(() => setAppVisible(true));
+
+    if (transitionTimeoutRef.current !== null) {
+      window.clearTimeout(transitionTimeoutRef.current);
+    }
+    transitionTimeoutRef.current = window.setTimeout(() => {
+      setStage('app');
+    }, 900);
+  };
+
   return (
-    <GameProvider>
-      <GameContent />
-    </GameProvider>
+    <div className="app-stage">
+      {stage !== 'splash' ? (
+        <div className={appVisible ? 'app-stage__app app-stage__app--visible' : 'app-stage__app'}>
+          <GameProvider>
+            <GameContent />
+          </GameProvider>
+        </div>
+      ) : null}
+
+      {stage !== 'app' ? <SplashScreen leaving={stage === 'transition'} onStart={handleStart} /> : null}
+    </div>
   );
 }
 

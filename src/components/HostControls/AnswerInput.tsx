@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import type { Answer } from '../../types';
 
 interface AnswerInputProps {
   answers: Answer[];
@@ -7,12 +8,7 @@ interface AnswerInputProps {
   disabled?: boolean;
 }
 
-export function AnswerInput({ 
-  answers, 
-  revealedAnswerIds,
-  onSubmit, 
-  disabled 
-}: AnswerInputProps) {
+export function AnswerInput({ onSubmit, disabled }: AnswerInputProps) {
   const [input, setInput] = useState('');
 
   const handleInputChange = (value: string) => {
@@ -52,4 +48,3 @@ export function AnswerInput({
     </div>
   );
 }
-

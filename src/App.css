@@ -19,3 +19,43 @@ body {
   background: transparent;
   position: relative;
 }
+
+.app-stage {
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+.app-stage__app {
+  min-height: 100vh;
+  opacity: 0;
+  transform: translateY(10px) scale(0.99);
+  filter: blur(12px);
+  clip-path: circle(0% at 50% 55%);
+  -webkit-clip-path: circle(0% at 50% 55%);
+  will-change: opacity, transform, filter, clip-path;
+  transition:
+    opacity 700ms ease,
+    transform 900ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    filter 700ms ease,
+    clip-path 900ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.app-stage__app--visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  filter: blur(0);
+  clip-path: circle(150% at 50% 55%);
+  -webkit-clip-path: circle(150% at 50% 55%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-stage__app {
+    transition: none;
+    opacity: 1;
+    transform: none;
+    filter: none;
+    clip-path: none;
+    -webkit-clip-path: none;
+  }
+}
