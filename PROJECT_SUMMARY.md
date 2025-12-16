@@ -101,12 +101,23 @@ Setup → Playing → (3 strikes) → Steal → Round Result
 
 ## 🔧 Technical Stack
 
-- **Framework**: React 18 + TypeScript
+- **Framework**: React 19 + TypeScript
 - **Build Tool**: Vite
 - **State Management**: Context API + useReducer
 - **Excel Parsing**: xlsx (SheetJS)
 - **Audio**: HTML5 Audio API
 - **Styling**: Plain CSS (no frameworks)
+
+## Requirements
+
+- Node.js 20 or newer (enforced via `package.json` engines field)
+- npm 10+ recommended
+
+## Enterprise Compatibility Notes
+
+- Standalone Vite + React 19 app; no AEM/webpack integration required.
+- Core scripts: `npm run dev`, `npm run build`, `npm run lint`.
+- Minimal runtime dependencies (React, React DOM, xlsx); run `npm audit` in enterprise environment as needed.
 
 ## 📋 Excel Format
 
@@ -184,4 +195,3 @@ npm run build
 The game is fully functional and ready for your team-building event. See `QUICK_START.md` for a 3-minute setup guide, or `README.md` for full documentation.
 
 Enjoy your Family Feud game! 🏆
-

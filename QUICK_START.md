@@ -2,6 +2,8 @@
 
 Get your Family Feud game running in 3 minutes!
 
+**Prereqs:** Node.js 20+ (enforced), npm 10+ recommended.
+
 ## Step 1: Install & Run (1 min)
 
 ```bash
@@ -57,4 +59,3 @@ Save as `.xlsx` file.
 - Zoom: Cmd/Ctrl + Plus
 
 That's it! Enjoy your game! 🎉
-

@@ -102,11 +102,23 @@ The host controls appear at the bottom of the screen and can be hidden/shown:
 
 ## Technology
 
-- React 18 + TypeScript
+- React 19 + TypeScript
 - Vite
 - xlsx (SheetJS) for Excel parsing
 - HTML5 Audio API for sounds
 - CSS animations
+
+## Requirements
+
+- Node.js 20 or newer (enforced via `package.json` engines field)
+- npm 10+ recommended
+
+## Enterprise Compatibility Notes
+
+- Standalone Vite + React 19 app (no AEM/webpack tooling required).
+- Scripts: `npm run dev` (local dev), `npm run build` (Vite build), `npm run lint` (ESLint).
+- Dependencies are minimal (React, React DOM, xlsx); review via `npm audit` in your environment if required.
+- Node 20+ enforced to align with enterprise runtime guidance.
 
 ## Customization
 
