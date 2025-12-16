@@ -36,3 +36,8 @@ public/sounds/*.ogg
 # Excel files (user content)
 *.xlsx
 *.xls
+
+# Other
+/photo library/
+
+
