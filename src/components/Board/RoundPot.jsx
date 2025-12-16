@@ -1,10 +1,8 @@
+import React from 'react';
+import PropTypes from 'prop-types';
 import './Board.css';
 
-interface RoundPotProps {
-  value: number;
-}
-
-export function RoundPot({ value }: RoundPotProps) {
+export function RoundPot({ value }) {
   return (
     <div className="round-pot">
       <p className="round-pot-label">Round Pot</p>
@@ -12,4 +10,8 @@ export function RoundPot({ value }: RoundPotProps) {
     </div>
   );
 }
+
+RoundPot.propTypes = {
+  value: PropTypes.number.isRequired,
+};
 

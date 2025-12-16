@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { GameProvider } from './context/GameProvider';
 import { useGame } from './context/useGame';
 import { Board } from './components/Board/Board';
@@ -36,25 +36,25 @@ function GameContent() {
 
   if (state.phase === 'gameOver') {
     return (
-      <>
+      <React.Fragment>
         <GameOver />
         <HostControls />
-      </>
+      </React.Fragment>
     );
   }
 
   return (
-    <>
+    <React.Fragment>
       <Board />
       <HostControls />
-    </>
+    </React.Fragment>
   );
 }
 
 function App() {
-  const [stage, setStage] = useState<'splash' | 'transition' | 'app'>('splash');
+  const [stage, setStage] = useState('splash');
   const [appVisible, setAppVisible] = useState(false);
-  const transitionTimeoutRef = useRef<number | null>(null);
+  const transitionTimeoutRef = useRef(null);
 
   useEffect(() => {
     return () => {
@@ -66,7 +66,7 @@ function App() {
 
   const handleStart = () => {
     const prefersReducedMotion =
-      window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
+      window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     if (prefersReducedMotion) {
       setStage('app');
@@ -103,3 +103,4 @@ function App() {
 }
 
 export default App;
+

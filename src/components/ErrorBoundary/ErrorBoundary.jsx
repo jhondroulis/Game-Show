@@ -1,27 +1,24 @@
-import { Component } from 'react';
-import type { ReactNode } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import './ErrorBoundary.css';
 
-type ErrorBoundaryProps = {
-  children: ReactNode;
-  onReset?: () => void;
-};
-
-type ErrorBoundaryState = {
-  hasError: boolean;
-};
-
-export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
-  state: ErrorBoundaryState = { hasError: false };
+export class ErrorBoundary extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+    this.handleReset = this.handleReset.bind(this);
+  }
 
   static getDerivedStateFromError() {
     return { hasError: true };
   }
 
-  private handleReset = () => {
+  handleReset() {
     this.setState({ hasError: false });
-    this.props.onReset?.();
-  };
+    if (this.props.onReset) {
+      this.props.onReset();
+    }
+  }
 
   render() {
     if (!this.state.hasError) return this.props.children;
@@ -46,4 +43,13 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     );
   }
 }
+
+ErrorBoundary.propTypes = {
+  children: PropTypes.node.isRequired,
+  onReset: PropTypes.func,
+};
+
+ErrorBoundary.defaultProps = {
+  onReset: null,
+};
 

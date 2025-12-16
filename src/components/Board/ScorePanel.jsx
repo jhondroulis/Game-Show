@@ -1,15 +1,8 @@
-import type { Team } from '../../types';
+import React from 'react';
+import PropTypes from 'prop-types';
 import './ScorePanel.css';
 
-interface ScorePanelProps {
-  team: Team;
-  teamName: string;
-  score: number;
-  isSetup: boolean;
-  onNameChange: (name: string) => void;
-}
-
-export function ScorePanel({ team, teamName, score, isSetup, onNameChange }: ScorePanelProps) {
+export function ScorePanel({ team, teamName, score, isSetup, onNameChange }) {
   return (
     <div className={`score-panel team-${team.toLowerCase()}`}>
       {isSetup ? (
@@ -28,4 +21,12 @@ export function ScorePanel({ team, teamName, score, isSetup, onNameChange }: Sco
     </div>
   );
 }
+
+ScorePanel.propTypes = {
+  team: PropTypes.oneOf(['A', 'B']).isRequired,
+  teamName: PropTypes.string.isRequired,
+  score: PropTypes.number.isRequired,
+  isSetup: PropTypes.bool.isRequired,
+  onNameChange: PropTypes.func.isRequired,
+};
 

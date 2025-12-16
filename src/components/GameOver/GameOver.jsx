@@ -1,3 +1,4 @@
+import React from 'react';
 import { useGame } from '../../context/useGame';
 import './GameOver.css';
 
@@ -28,7 +29,7 @@ export function GameOver() {
         {!winner && (
           <div className="winner-banner">
             <p className="winner-text">
-              🤝 It's a Tie! 🤝
+              🤝 It&apos;s a Tie! 🤝
             </p>
           </div>
         )}
@@ -54,3 +55,4 @@ export function GameOver() {
     </div>
   );
 }
+

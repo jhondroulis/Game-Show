@@ -1,18 +1,12 @@
-import type { Question } from '../../types';
-
-interface QuestionSelectProps {
-  questions: Question[];
-  currentQuestionId: string | null;
-  onSelect: (questionId: string) => void;
-  disabled?: boolean;
-}
+import React from 'react';
+import PropTypes from 'prop-types';
 
 export function QuestionSelect({ 
   questions, 
   currentQuestionId, 
   onSelect,
   disabled 
-}: QuestionSelectProps) {
+}) {
   const noQuestions = questions.length === 0;
 
   return (
@@ -37,3 +31,19 @@ export function QuestionSelect({
     </div>
   );
 }
+
+QuestionSelect.propTypes = {
+  questions: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    text: PropTypes.string.isRequired,
+  })).isRequired,
+  currentQuestionId: PropTypes.string,
+  onSelect: PropTypes.func.isRequired,
+  disabled: PropTypes.bool,
+};
+
+QuestionSelect.defaultProps = {
+  currentQuestionId: null,
+  disabled: false,
+};
+

@@ -1,10 +1,8 @@
+import React from 'react';
+import PropTypes from 'prop-types';
 import './StrikeIndicator.css';
 
-interface StrikeIndicatorProps {
-  strikes: number;
-}
-
-export function StrikeIndicator({ strikes }: StrikeIndicatorProps) {
+export function StrikeIndicator({ strikes }) {
   return (
     <div className="strike-container">
       {[1, 2, 3].map((num) => (
@@ -15,4 +13,8 @@ export function StrikeIndicator({ strikes }: StrikeIndicatorProps) {
     </div>
   );
 }
+
+StrikeIndicator.propTypes = {
+  strikes: PropTypes.number.isRequired,
+};
 

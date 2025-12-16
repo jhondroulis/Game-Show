@@ -1,23 +1,13 @@
 import * as XLSX from 'xlsx';
-import type { Question, ExcelRow } from '../types';
-
-interface ParseResult {
-  success: boolean;
-  questions?: Question[];
-  error?: string;
-  preview?: {
-    questionCount: number;
-    answerCount: number;
-    questions: Array<{ id: string; text: string; answerCount: number }>;
-  };
-}
 
 const MAX_EXCEL_BYTES = 10 * 1024 * 1024; // 10MB
 
 /**
  * Parse an Excel file and convert it to Question objects
+ * @param {File} file
+ * @returns {Promise<{success: boolean, questions?: Array, error?: string, preview?: Object}>}
  */
-export async function parseExcelFile(file: File): Promise<ParseResult> {
+export async function parseExcelFile(file) {
   try {
     if (file.size > MAX_EXCEL_BYTES) {
       return {
@@ -38,7 +28,7 @@ export async function parseExcelFile(file: File): Promise<ParseResult> {
     }
     
     const worksheet = workbook.Sheets[firstSheetName];
-    const jsonData = XLSX.utils.sheet_to_json<ExcelRow>(worksheet);
+    const jsonData = XLSX.utils.sheet_to_json(worksheet);
     
     if (jsonData.length === 0) {
       return { success: false, error: 'Excel file is empty' };
@@ -68,8 +58,10 @@ export async function parseExcelFile(file: File): Promise<ParseResult> {
 
 /**
  * Validate the Excel rows have required columns
+ * @param {Array} rows
+ * @returns {{success: boolean, error?: string}}
  */
-function validateRows(rows: ExcelRow[]): ParseResult {
+function validateRows(rows) {
   const requiredColumns = ['questionId', 'questionText', 'answerText', 'points'];
   
   for (let i = 0; i < rows.length; i++) {
@@ -77,7 +69,7 @@ function validateRows(rows: ExcelRow[]): ParseResult {
     
     // Check required columns
     for (const col of requiredColumns) {
-      if (!(col in row) || row[col as keyof ExcelRow] === undefined || row[col as keyof ExcelRow] === null) {
+      if (!(col in row) || row[col] === undefined || row[col] === null) {
         return {
           success: false,
           error: `Row ${i + 2} is missing required column: ${col}`
@@ -114,9 +106,11 @@ function validateRows(rows: ExcelRow[]): ParseResult {
 
 /**
  * Convert Excel rows to Question objects
+ * @param {Array} rows
+ * @returns {Array}
  */
-function convertToQuestions(rows: ExcelRow[]): Question[] {
-  const questionsMap = new Map<string, Question>();
+function convertToQuestions(rows) {
+  const questionsMap = new Map();
   
   for (const row of rows) {
     const questionId = row.questionId.toString().trim();
@@ -125,7 +119,7 @@ function convertToQuestions(rows: ExcelRow[]): Question[] {
     const points = row.points;
     
     // Parse aliases (comma-separated, normalize to lowercase)
-    const aliases: string[] = [];
+    const aliases = [];
     if (row.aliases) {
       const aliasStr = row.aliases.toString().trim();
       if (aliasStr) {
@@ -144,7 +138,7 @@ function convertToQuestions(rows: ExcelRow[]): Question[] {
       });
     }
     
-    const question = questionsMap.get(questionId)!;
+    const question = questionsMap.get(questionId);
     
     // Add answer
     const answerId = `${questionId}_${question.answers.length}`;
@@ -167,8 +161,10 @@ function convertToQuestions(rows: ExcelRow[]): Question[] {
 
 /**
  * Generate a preview summary of the parsed questions
+ * @param {Array} questions
+ * @returns {Object}
  */
-function generatePreview(questions: Question[]) {
+function generatePreview(questions) {
   return {
     questionCount: questions.length,
     answerCount: questions.reduce((sum, q) => sum + q.answers.length, 0),
@@ -179,3 +175,4 @@ function generatePreview(questions: Question[]) {
     }))
   };
 }
+

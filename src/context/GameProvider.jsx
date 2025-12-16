@@ -1,10 +1,9 @@
-import { useReducer } from 'react';
-import type { ReactNode } from 'react';
-import type { GameAction, GameState } from '../types';
+import React, { useReducer } from 'react';
+import PropTypes from 'prop-types';
 import { GameContext } from './gameContext';
 import { loadQuestionsFromStorage } from '../utils/questionsStorage';
 
-const initialState: GameState = {
+const initialState = {
   phase: 'setup',
   questions: [],
   currentQuestionId: null,
@@ -17,7 +16,7 @@ const initialState: GameState = {
   stealOriginTeam: null,
 };
 
-function initGameState(baseState: GameState): GameState {
+function initGameState(baseState) {
   const savedQuestions = loadQuestionsFromStorage();
   if (!savedQuestions || savedQuestions.length === 0) return baseState;
 
@@ -27,7 +26,7 @@ function initGameState(baseState: GameState): GameState {
   };
 }
 
-function gameReducer(state: GameState, action: GameAction): GameState {
+function gameReducer(state, action) {
   switch (action.type) {
     case 'LOAD_QUESTIONS':
       return {
@@ -142,7 +141,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
   }
 }
 
-export function GameProvider({ children }: { children: ReactNode }) {
+export function GameProvider({ children }) {
   const [state, dispatch] = useReducer(gameReducer, initialState, initGameState);
 
   const getCurrentQuestion = () => {
@@ -164,4 +163,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>;
 }
+
+GameProvider.propTypes = {
+  children: PropTypes.node.isRequired,
+};
 

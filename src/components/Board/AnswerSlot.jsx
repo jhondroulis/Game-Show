@@ -1,12 +1,8 @@
-import type { Answer } from '../../types';
+import React from 'react';
+import PropTypes from 'prop-types';
 import './AnswerSlot.css';
 
-interface AnswerSlotProps {
-  answer: Answer;
-  revealed: boolean;
-}
-
-export function AnswerSlot({ answer, revealed }: AnswerSlotProps) {
+export function AnswerSlot({ answer, revealed }) {
   return (
     <div className={`answer-slot ${revealed ? 'revealed' : ''}`}>
       <div className="slot-content">
@@ -20,3 +16,14 @@ export function AnswerSlot({ answer, revealed }: AnswerSlotProps) {
     </div>
   );
 }
+
+AnswerSlot.propTypes = {
+  answer: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    text: PropTypes.string.isRequired,
+    points: PropTypes.number.isRequired,
+    aliases: PropTypes.arrayOf(PropTypes.string),
+  }).isRequired,
+  revealed: PropTypes.bool.isRequired,
+};
+

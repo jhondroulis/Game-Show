@@ -1,26 +1,16 @@
-import { useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
+import PropTypes from 'prop-types';
 import { parseExcelFile } from '../../utils/excelParser';
-import type { Question } from '../../types';
 
-interface ExcelUploadProps {
-  onQuestionsLoaded: (questions: Question[]) => void;
-}
-
-type QuestionsPreview = {
-  questionCount: number;
-  answerCount: number;
-  questions: Array<{ id: string; text: string; answerCount: number }>;
-};
-
-export function ExcelUpload({ onQuestionsLoaded }: ExcelUploadProps) {
-  const [preview, setPreview] = useState<QuestionsPreview | null>(null);
-  const [error, setError] = useState<string>('');
+export function ExcelUpload({ onQuestionsLoaded }) {
+  const [preview, setPreview] = useState(null);
+  const [error, setError] = useState('');
   const [isParsing, setIsParsing] = useState(false);
-  const [pendingQuestions, setPendingQuestions] = useState<Question[]>([]);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [pendingQuestions, setPendingQuestions] = useState([]);
+  const fileInputRef = useRef(null);
 
-  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+  const handleFileSelect = async (e) => {
+    const file = e.target.files && e.target.files[0];
     if (!file) return;
 
     setError('');
@@ -62,7 +52,7 @@ export function ExcelUpload({ onQuestionsLoaded }: ExcelUploadProps) {
     }
   };
 
-  const handleFileButtonClick = (e: React.MouseEvent<HTMLLabelElement>) => {
+  const handleFileButtonClick = (e) => {
     if (isParsing) {
       e.preventDefault();
       e.stopPropagation();
@@ -70,7 +60,7 @@ export function ExcelUpload({ onQuestionsLoaded }: ExcelUploadProps) {
   };
 
   return (
-    <>
+    <React.Fragment>
       <div className="control-group">
         <label className="control-label">Upload Questions</label>
         <input
@@ -139,6 +129,11 @@ export function ExcelUpload({ onQuestionsLoaded }: ExcelUploadProps) {
           </div>
         </div>
       )}
-    </>
+    </React.Fragment>
   );
 }
+
+ExcelUpload.propTypes = {
+  onQuestionsLoaded: PropTypes.func.isRequired,
+};
+

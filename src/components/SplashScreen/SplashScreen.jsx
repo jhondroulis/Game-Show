@@ -1,13 +1,9 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import PropTypes from 'prop-types';
 import './SplashScreen.css';
 
-type SplashScreenProps = {
-  leaving: boolean;
-  onStart: () => void;
-};
-
-export function SplashScreen({ leaving, onStart }: SplashScreenProps) {
-  const videoRef = useRef<HTMLVideoElement | null>(null);
+export function SplashScreen({ leaving, onStart }) {
+  const videoRef = useRef(null);
   const [hasEnded, setHasEnded] = useState(false);
   const [muted, setMuted] = useState(false);
 
@@ -27,18 +23,18 @@ export function SplashScreen({ leaving, onStart }: SplashScreenProps) {
       try {
         await video.play();
         if (!cancelled) setMuted(false);
-      } catch {
+      } catch (err) {
         video.muted = true;
         try {
           await video.play();
-        } catch {
+        } catch (innerErr) {
           // If playback fails entirely, the "Let's play!" fallback still works.
         }
         if (!cancelled) setMuted(true);
       }
     };
 
-    void start();
+    start();
     return () => {
       cancelled = true;
     };
@@ -55,7 +51,7 @@ export function SplashScreen({ leaving, onStart }: SplashScreenProps) {
 
     try {
       await video.play();
-    } catch {
+    } catch (err) {
       // Ignore; some browsers still require additional gestures.
     }
   };
@@ -88,3 +84,9 @@ export function SplashScreen({ leaving, onStart }: SplashScreenProps) {
     </div>
   );
 }
+
+SplashScreen.propTypes = {
+  leaving: PropTypes.bool.isRequired,
+  onStart: PropTypes.func.isRequired,
+};
+

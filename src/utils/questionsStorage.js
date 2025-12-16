@@ -1,16 +1,13 @@
-import type { Question } from '../types';
+const storageKey = 'familyFeud.questions.v1';
 
-const storageKey = 'familyFeud.questions.v1' as const;
-
-type PersistedQuestions = {
-  schemaVersion: 1;
-  savedAtIso: string;
-  questions: Question[];
-};
-
-export function saveQuestionsToStorage(questions: Question[]) {
+/**
+ * Save questions to localStorage
+ * @param {Array} questions
+ * @returns {boolean}
+ */
+export function saveQuestionsToStorage(questions) {
   try {
-    const payload: PersistedQuestions = {
+    const payload = {
       schemaVersion: 1,
       savedAtIso: new Date().toISOString(),
       questions,
@@ -22,21 +19,29 @@ export function saveQuestionsToStorage(questions: Question[]) {
   }
 }
 
-export function loadQuestionsFromStorage(): Question[] | null {
+/**
+ * Load questions from localStorage
+ * @returns {Array|null}
+ */
+export function loadQuestionsFromStorage() {
   try {
     const raw = localStorage.getItem(storageKey);
     if (!raw) return null;
 
-    const parsed = JSON.parse(raw) as Partial<PersistedQuestions>;
+    const parsed = JSON.parse(raw);
     if (parsed.schemaVersion !== 1) return null;
     if (!Array.isArray(parsed.questions)) return null;
 
-    return parsed.questions as Question[];
+    return parsed.questions;
   } catch {
     return null;
   }
 }
 
+/**
+ * Clear questions from localStorage
+ */
 export function clearQuestionsStorage() {
   localStorage.removeItem(storageKey);
 }
+

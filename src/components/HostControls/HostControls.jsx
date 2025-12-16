@@ -1,20 +1,19 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useGame } from '../../context/useGame';
 import { matchAnswer } from '../../utils/matchAnswer';
 import { ExcelUpload } from './ExcelUpload';
 import { QuestionSelect } from './QuestionSelect';
 import { AnswerInput } from './AnswerInput';
-import type { Question } from '../../types';
 import { saveQuestionsToStorage } from '../../utils/questionsStorage';
 import './HostControls.css';
 
 export function HostControls() {
   const { state, dispatch, getCurrentQuestion } = useGame();
   const [collapsed, setCollapsed] = useState(false);
-  const [persistWarning, setPersistWarning] = useState<string>('');
+  const [persistWarning, setPersistWarning] = useState('');
   const currentQuestion = getCurrentQuestion();
 
-  const handleQuestionsLoaded = (questions: Question[]) => {
+  const handleQuestionsLoaded = (questions) => {
     const persisted = saveQuestionsToStorage(questions);
     setPersistWarning(
       persisted
@@ -24,13 +23,13 @@ export function HostControls() {
     dispatch({ type: 'LOAD_QUESTIONS', payload: questions });
   };
 
-  const handleQuestionSelect = (questionId: string) => {
+  const handleQuestionSelect = (questionId) => {
     if (questionId) {
       dispatch({ type: 'SELECT_QUESTION', payload: questionId });
     }
   };
 
-  const handleAnswerSubmit = (input: string) => {
+  const handleAnswerSubmit = (input) => {
     if (!currentQuestion) return;
 
     // Find unrevealed answers
@@ -56,7 +55,7 @@ export function HostControls() {
     dispatch({ type: 'REVEAL_ALL' });
   };
 
-  const handleAwardPot = (team: 'A' | 'B') => {
+  const handleAwardPot = (team) => {
     dispatch({ type: 'AWARD_POT', payload: team });
   };
 
@@ -69,7 +68,7 @@ export function HostControls() {
   };
 
   const handleNewGame = () => {
-    if (confirm('Start a new game? This will reset all scores.')) {
+    if (window.confirm('Start a new game? This will reset all scores.')) {
       dispatch({ type: 'NEW_GAME' });
     }
   };
@@ -110,7 +109,7 @@ export function HostControls() {
         </div>
 
         {(state.phase === 'playing' || state.phase === 'steal') && currentQuestion && (
-          <>
+          <React.Fragment>
             <div className="control-row answer-input-row">
               <AnswerInput
                 answers={currentQuestion.answers}
@@ -129,7 +128,7 @@ export function HostControls() {
               </button>
 
               {state.phase === 'steal' && (
-                <>
+                <React.Fragment>
                   <button 
                     className="control-button success"
                     onClick={() => handleAwardPot(state.activeTeam)}
@@ -138,25 +137,25 @@ export function HostControls() {
                   </button>
                   <button 
                     className="control-button"
-                    onClick={() => handleAwardPot(state.stealOriginTeam!)}
+                    onClick={() => handleAwardPot(state.stealOriginTeam)}
                   >
-                    Award to {state.teamNames[state.stealOriginTeam!]} (Steal Failed)
+                    Award to {state.teamNames[state.stealOriginTeam]} (Steal Failed)
                   </button>
-                </>
+                </React.Fragment>
               )}
 
               {state.phase === 'playing' && (
-                <>
+                <React.Fragment>
                   <button 
                     className="control-button success"
                     onClick={() => handleAwardPot(state.activeTeam)}
                   >
                     Award Pot to {state.teamNames[state.activeTeam]}
                   </button>
-                </>
+                </React.Fragment>
               )}
             </div>
-          </>
+          </React.Fragment>
         )}
 
         {state.phase === 'roundResult' && (
@@ -188,3 +187,4 @@ export function HostControls() {
     </div>
   );
 }
+

@@ -1,3 +1,4 @@
+import React from 'react';
 import { useGame } from '../../context/useGame';
 import { AnswerSlot } from './AnswerSlot';
 import { ScorePanel } from './ScorePanel';
@@ -9,7 +10,7 @@ export function Board() {
   const { state, dispatch, getCurrentQuestion } = useGame();
   const currentQuestion = getCurrentQuestion();
 
-  const handleTeamNameChange = (team: 'A' | 'B', name: string) => {
+  const handleTeamNameChange = (team, name) => {
     dispatch({ type: 'SET_TEAM_NAME', payload: { team, name } });
   };
 
@@ -139,3 +140,4 @@ export function Board() {
     </div>
   );
 }
+

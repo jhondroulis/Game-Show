@@ -1,21 +1,14 @@
-import { useState } from 'react';
-import type { Answer } from '../../types';
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 
-interface AnswerInputProps {
-  answers: Answer[];
-  revealedAnswerIds: Set<string>;
-  onSubmit: (input: string) => void;
-  disabled?: boolean;
-}
-
-export function AnswerInput({ onSubmit, disabled }: AnswerInputProps) {
+export function AnswerInput({ onSubmit, disabled }) {
   const [input, setInput] = useState('');
 
-  const handleInputChange = (value: string) => {
+  const handleInputChange = (value) => {
     setInput(value);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     if (input.trim()) {
       onSubmit(input.trim());
@@ -48,3 +41,17 @@ export function AnswerInput({ onSubmit, disabled }: AnswerInputProps) {
     </div>
   );
 }
+
+AnswerInput.propTypes = {
+  answers: PropTypes.array,
+  revealedAnswerIds: PropTypes.instanceOf(Set),
+  onSubmit: PropTypes.func.isRequired,
+  disabled: PropTypes.bool,
+};
+
+AnswerInput.defaultProps = {
+  answers: [],
+  revealedAnswerIds: new Set(),
+  disabled: false,
+};
+

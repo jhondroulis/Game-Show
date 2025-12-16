@@ -16,7 +16,8 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-image: url('/family-feud-bg.png');
+  /* CRA serves public folder files at runtime */
+  background-image: url('../../assets/family-feud-bg.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

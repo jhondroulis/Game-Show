@@ -1,20 +1,23 @@
-import type { Answer } from '../types';
-
 /**
  * Normalize a string for comparison
  * - Convert to lowercase
  * - Trim whitespace
  * - Remove extra spaces
+ * @param {string} str
+ * @returns {string}
  */
-function normalizeString(str: string): string {
+function normalizeString(str) {
   return str.toLowerCase().trim().replace(/\s+/g, ' ');
 }
 
 /**
  * Check if input matches an answer (including aliases)
  * Returns the matching answer or null
+ * @param {string} input
+ * @param {Array} answers
+ * @returns {Object|null}
  */
-export function matchAnswer(input: string, answers: Answer[]): Answer | null {
+export function matchAnswer(input, answers) {
   const normalized = normalizeString(input);
   
   if (!normalized) {
@@ -59,15 +62,18 @@ export function matchAnswer(input: string, answers: Answer[]): Answer | null {
 
 /**
  * Get all potential matches (for preview/suggestion)
+ * @param {string} input
+ * @param {Array} answers
+ * @returns {Array}
  */
-export function findPotentialMatches(input: string, answers: Answer[]): Answer[] {
+export function findPotentialMatches(input, answers) {
   const normalized = normalizeString(input);
   
   if (!normalized) {
     return [];
   }
   
-  const matches: Answer[] = [];
+  const matches = [];
   
   for (const answer of answers) {
     const answerNormalized = normalizeString(answer.text);

@@ -1,17 +1,15 @@
 import { useRef, useCallback } from 'react';
 
-type SoundType = 'ding' | 'buzzer' | 'applause';
-
-const SOUND_FILES: Record<SoundType, string> = {
+const SOUND_FILES = {
   ding: '/sounds/ding.mp3',
   buzzer: '/sounds/buzzer.mp3',
   applause: '/sounds/applause.mp3',
 };
 
 export function useSound() {
-  const audioRefs = useRef<Record<string, HTMLAudioElement>>({});
+  const audioRefs = useRef({});
 
-  const play = useCallback((sound: SoundType) => {
+  const play = useCallback((sound) => {
     try {
       const soundFile = SOUND_FILES[sound];
       
@@ -40,3 +38,4 @@ export function useSound() {
 
   return { play };
 }
+
