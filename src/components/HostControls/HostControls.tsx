@@ -1,17 +1,26 @@
 import { useState } from 'react';
-import { useGame } from '../../context/GameContext';
+import { useGame } from '../../context/useGame';
 import { matchAnswer } from '../../utils/matchAnswer';
 import { ExcelUpload } from './ExcelUpload';
 import { QuestionSelect } from './QuestionSelect';
 import { AnswerInput } from './AnswerInput';
+import type { Question } from '../../types';
+import { saveQuestionsToStorage } from '../../utils/questionsStorage';
 import './HostControls.css';
 
 export function HostControls() {
   const { state, dispatch, getCurrentQuestion } = useGame();
   const [collapsed, setCollapsed] = useState(false);
+  const [persistWarning, setPersistWarning] = useState<string>('');
   const currentQuestion = getCurrentQuestion();
 
-  const handleQuestionsLoaded = (questions: any[]) => {
+  const handleQuestionsLoaded = (questions: Question[]) => {
+    const persisted = saveQuestionsToStorage(questions);
+    setPersistWarning(
+      persisted
+        ? ''
+        : 'Could not save questions to this browser (they may be lost on reload).'
+    );
     dispatch({ type: 'LOAD_QUESTIONS', payload: questions });
   };
 
@@ -88,6 +97,7 @@ export function HostControls() {
       </div>
 
       <div className="controls-content">
+        {persistWarning && <div className="info-message">{persistWarning}</div>}
         <div className="control-row first-control-row">
           <ExcelUpload onQuestionsLoaded={handleQuestionsLoaded} />
           
@@ -178,4 +188,3 @@ export function HostControls() {
     </div>
   );
 }
-

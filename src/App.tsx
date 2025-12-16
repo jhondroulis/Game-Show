@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { GameProvider, useGame } from './context/GameContext';
+import { GameProvider } from './context/GameProvider';
+import { useGame } from './context/useGame';
 import { Board } from './components/Board/Board';
 import { GameOver } from './components/GameOver/GameOver';
 import { HostControls } from './components/HostControls/HostControls';

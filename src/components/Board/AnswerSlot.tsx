@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import type { Answer } from '../../types';
 import './AnswerSlot.css';
 
@@ -8,18 +7,8 @@ interface AnswerSlotProps {
 }
 
 export function AnswerSlot({ answer, revealed }: AnswerSlotProps) {
-  const [isRevealing, setIsRevealing] = useState(false);
-
-  useEffect(() => {
-    if (revealed && !isRevealing) {
-      setIsRevealing(true);
-      const timer = setTimeout(() => setIsRevealing(false), 600);
-      return () => clearTimeout(timer);
-    }
-  }, [revealed, isRevealing]);
-
   return (
-    <div className={`answer-slot ${revealed ? 'revealed' : ''} ${isRevealing ? 'revealing' : ''}`}>
+    <div className={`answer-slot ${revealed ? 'revealed' : ''}`}>
       <div className="slot-content">
         {revealed ? (
           <div className="slot-text">{answer.text}</div>
@@ -31,4 +20,3 @@ export function AnswerSlot({ answer, revealed }: AnswerSlotProps) {
     </div>
   );
 }
-

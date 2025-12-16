@@ -1,8 +1,9 @@
-import React, { createContext, useContext, useReducer } from 'react';
+import { useReducer } from 'react';
 import type { ReactNode } from 'react';
-import type { GameState, GameAction, Question } from '../types';
+import type { GameAction, GameState } from '../types';
+import { GameContext } from './gameContext';
+import { loadQuestionsFromStorage } from '../utils/questionsStorage';
 
-// Initial state
 const initialState: GameState = {
   phase: 'setup',
   questions: [],
@@ -16,7 +17,16 @@ const initialState: GameState = {
   stealOriginTeam: null,
 };
 
-// Reducer function
+function initGameState(baseState: GameState): GameState {
+  const savedQuestions = loadQuestionsFromStorage();
+  if (!savedQuestions || savedQuestions.length === 0) return baseState;
+
+  return {
+    ...baseState,
+    questions: savedQuestions,
+  };
+}
+
 function gameReducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
     case 'LOAD_QUESTIONS':
@@ -53,10 +63,9 @@ function gameReducer(state: GameState, action: GameAction): GameState {
         roundPot: state.roundPot + action.payload.points,
       };
 
-    case 'ADD_STRIKE':
+    case 'ADD_STRIKE': {
       const newStrikes = state.roundStrikes + 1;
       if (newStrikes >= 3) {
-        // Switch to steal phase
         return {
           ...state,
           roundStrikes: newStrikes,
@@ -69,9 +78,9 @@ function gameReducer(state: GameState, action: GameAction): GameState {
         ...state,
         roundStrikes: newStrikes,
       };
+    }
 
     case 'SWITCH_TO_STEAL':
-      // Manual switch to steal (if needed)
       return {
         ...state,
         phase: 'steal',
@@ -79,19 +88,19 @@ function gameReducer(state: GameState, action: GameAction): GameState {
         activeTeam: state.activeTeam === 'A' ? 'B' : 'A',
       };
 
-    case 'REVEAL_ALL':
-      // Reveal all unrevealed answers
-      const currentQuestion = state.questions.find(q => q.id === state.currentQuestionId);
+    case 'REVEAL_ALL': {
+      const currentQuestion = state.questions.find((q) => q.id === state.currentQuestionId);
       if (!currentQuestion) return state;
-      
-      const allAnswerIds = new Set(currentQuestion.answers.map(a => a.id));
+
+      const allAnswerIds = new Set(currentQuestion.answers.map((a) => a.id));
       return {
         ...state,
         revealedAnswerIds: allAnswerIds,
         phase: 'roundResult',
       };
+    }
 
-    case 'AWARD_POT':
+    case 'AWARD_POT': {
       const winner = action.payload;
       return {
         ...state,
@@ -101,6 +110,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
         },
         phase: 'roundResult',
       };
+    }
 
     case 'NEXT_ROUND':
       return {
@@ -111,7 +121,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
         roundStrikes: 0,
         revealedAnswerIds: new Set(),
         stealOriginTeam: null,
-        activeTeam: 'A', // Reset to team A for next round
+        activeTeam: 'A',
       };
 
     case 'GAME_OVER':
@@ -123,8 +133,8 @@ function gameReducer(state: GameState, action: GameAction): GameState {
     case 'NEW_GAME':
       return {
         ...initialState,
-        questions: state.questions, // Keep loaded questions
-        teamNames: state.teamNames, // Keep team names
+        questions: state.questions,
+        teamNames: state.teamNames,
       };
 
     default:
@@ -132,22 +142,11 @@ function gameReducer(state: GameState, action: GameAction): GameState {
   }
 }
 
-// Context
-interface GameContextType {
-  state: GameState;
-  dispatch: React.Dispatch<GameAction>;
-  getCurrentQuestion: () => Question | undefined;
-  getUnrevealedAnswers: () => number;
-}
-
-const GameContext = createContext<GameContextType | undefined>(undefined);
-
-// Provider component
 export function GameProvider({ children }: { children: ReactNode }) {
-  const [state, dispatch] = useReducer(gameReducer, initialState);
+  const [state, dispatch] = useReducer(gameReducer, initialState, initGameState);
 
   const getCurrentQuestion = () => {
-    return state.questions.find(q => q.id === state.currentQuestionId);
+    return state.questions.find((q) => q.id === state.currentQuestionId);
   };
 
   const getUnrevealedAnswers = () => {
@@ -164,14 +163,5 @@ export function GameProvider({ children }: { children: ReactNode }) {
   };
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>;
-}
-
-// Custom hook
-export function useGame() {
-  const context = useContext(GameContext);
-  if (!context) {
-    throw new Error('useGame must be used within a GameProvider');
-  }
-  return context;
 }
 

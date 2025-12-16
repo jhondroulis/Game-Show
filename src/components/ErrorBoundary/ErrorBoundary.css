@@ -1,0 +1,50 @@
+.error-boundary {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: radial-gradient(circle at top, rgba(59, 130, 246, 0.25), rgba(0, 0, 0, 0.85));
+}
+
+.error-boundary__card {
+  max-width: 560px;
+  width: 100%;
+  background: rgba(17, 24, 39, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  padding: 20px;
+  color: #fff;
+  backdrop-filter: blur(8px);
+}
+
+.error-boundary__title {
+  margin: 0 0 8px;
+  font-size: 26px;
+}
+
+.error-boundary__subtitle {
+  margin: 0 0 16px;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.4;
+}
+
+.error-boundary__actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.error-boundary__button {
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(59, 130, 246, 0.9);
+  color: #fff;
+  border-radius: 10px;
+  padding: 10px 14px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.error-boundary__button--secondary {
+  background: rgba(255, 255, 255, 0.08);
+}
+

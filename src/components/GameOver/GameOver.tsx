@@ -1,4 +1,4 @@
-import { useGame } from '../../context/GameContext';
+import { useGame } from '../../context/useGame';
 import './GameOver.css';
 
 export function GameOver() {
@@ -54,4 +54,3 @@ export function GameOver() {
     </div>
   );
 }
-

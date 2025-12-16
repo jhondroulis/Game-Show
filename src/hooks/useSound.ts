@@ -30,14 +30,13 @@ export function useSound() {
       
       if (playPromise !== undefined) {
         playPromise.catch((error) => {
-          console.warn(`Failed to play ${sound} sound:`, error);
+          void error;
         });
       }
     } catch (error) {
-      console.warn(`Error playing ${sound} sound:`, error);
+      void error;
     }
   }, []);
 
   return { play };
 }
-

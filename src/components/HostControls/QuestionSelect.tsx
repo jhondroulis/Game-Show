@@ -13,9 +13,8 @@ export function QuestionSelect({
   onSelect,
   disabled 
 }: QuestionSelectProps) {
-  // Debug: Log questions count
-  console.log('[QuestionSelect] Total questions:', questions.length, questions.map(q => q.id));
-  
+  const noQuestions = questions.length === 0;
+
   return (
     <div className="control-group">
       <label className="control-label">Select Question ({questions.length} available)</label>
@@ -23,7 +22,7 @@ export function QuestionSelect({
         className="control-select"
         value={currentQuestionId || ''}
         onChange={(e) => onSelect(e.target.value)}
-        disabled={disabled || questions.length === 0}
+        disabled={disabled || noQuestions}
       >
         <option value="">-- Choose a question --</option>
         {questions.map((q) => (
@@ -32,7 +31,9 @@ export function QuestionSelect({
           </option>
         ))}
       </select>
+      {noQuestions && (
+        <div className="info-message">Upload an Excel file to populate questions.</div>
+      )}
     </div>
   );
 }
-

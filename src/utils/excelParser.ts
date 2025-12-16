@@ -12,11 +12,22 @@ interface ParseResult {
   };
 }
 
+const MAX_EXCEL_BYTES = 10 * 1024 * 1024; // 10MB
+
 /**
  * Parse an Excel file and convert it to Question objects
  */
 export async function parseExcelFile(file: File): Promise<ParseResult> {
   try {
+    if (file.size > MAX_EXCEL_BYTES) {
+      return {
+        success: false,
+        error: `File is too large (${Math.ceil(file.size / (1024 * 1024))}MB). Please upload a file under ${Math.ceil(
+          MAX_EXCEL_BYTES / (1024 * 1024)
+        )}MB.`,
+      };
+    }
+
     const data = await file.arrayBuffer();
     const workbook = XLSX.read(data, { type: 'array' });
     
@@ -40,11 +51,7 @@ export async function parseExcelFile(file: File): Promise<ParseResult> {
     }
     
     const questions = convertToQuestions(jsonData);
-    console.log('[excelParser] Total rows parsed:', jsonData.length);
-    console.log('[excelParser] Unique questionIds found:', new Set(jsonData.map(r => r.questionId.toString().trim())).size);
-    console.log('[excelParser] Questions created:', questions.length, questions.map(q => q.id));
     const preview = generatePreview(questions);
-    console.log('[excelParser] Preview questions count:', preview.questionCount, 'Preview array length:', preview.questions.length);
     
     return {
       success: true,
@@ -172,4 +179,3 @@ function generatePreview(questions: Question[]) {
     }))
   };
 }
-

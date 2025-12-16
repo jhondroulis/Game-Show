@@ -6,9 +6,16 @@ interface ExcelUploadProps {
   onQuestionsLoaded: (questions: Question[]) => void;
 }
 
+type QuestionsPreview = {
+  questionCount: number;
+  answerCount: number;
+  questions: Array<{ id: string; text: string; answerCount: number }>;
+};
+
 export function ExcelUpload({ onQuestionsLoaded }: ExcelUploadProps) {
-  const [preview, setPreview] = useState<any>(null);
+  const [preview, setPreview] = useState<QuestionsPreview | null>(null);
   const [error, setError] = useState<string>('');
+  const [isParsing, setIsParsing] = useState(false);
   const [pendingQuestions, setPendingQuestions] = useState<Question[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -18,19 +25,22 @@ export function ExcelUpload({ onQuestionsLoaded }: ExcelUploadProps) {
 
     setError('');
     setPreview(null);
+    setIsParsing(true);
 
-    const result = await parseExcelFile(file);
+    try {
+      const result = await parseExcelFile(file);
 
-    if (!result.success) {
-      setError(result.error || 'Failed to parse file');
-      return;
-    }
+      if (!result.success) {
+        setError(result.error || 'Failed to parse file');
+        return;
+      }
 
-    if (result.questions && result.preview) {
-      console.log('[ExcelUpload] Parsed questions:', result.questions.length, result.questions.map(q => q.id));
-      console.log('[ExcelUpload] Preview questions:', result.preview.questionCount, result.preview.questions);
-      setPendingQuestions(result.questions);
-      setPreview(result.preview);
+      if (result.questions && result.preview) {
+        setPendingQuestions(result.questions);
+        setPreview(result.preview);
+      }
+    } finally {
+      setIsParsing(false);
     }
   };
 
@@ -46,8 +56,16 @@ export function ExcelUpload({ onQuestionsLoaded }: ExcelUploadProps) {
   const handleCancel = () => {
     setPreview(null);
     setPendingQuestions([]);
+    setError('');
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
+    }
+  };
+
+  const handleFileButtonClick = (e: React.MouseEvent<HTMLLabelElement>) => {
+    if (isParsing) {
+      e.preventDefault();
+      e.stopPropagation();
     }
   };
 
@@ -62,10 +80,17 @@ export function ExcelUpload({ onQuestionsLoaded }: ExcelUploadProps) {
           onChange={handleFileSelect}
           className="file-input"
           id="excel-upload"
+          disabled={isParsing}
         />
-        <label htmlFor="excel-upload" className="file-button">
-          📁 Choose Excel File
+        <label
+          htmlFor="excel-upload"
+          className={`file-button${isParsing ? ' file-button--disabled' : ''}`}
+          aria-disabled={isParsing}
+          onClick={handleFileButtonClick}
+        >
+          {isParsing ? 'Parsing…' : '📁 Choose Excel File'}
         </label>
+        {isParsing && <div className="info-message">Reading and validating spreadsheet…</div>}
         {error && <div className="error-message">{error}</div>}
       </div>
 
@@ -88,7 +113,7 @@ export function ExcelUpload({ onQuestionsLoaded }: ExcelUploadProps) {
 
             <div className="preview-questions">
               {preview.questions.length > 0 ? (
-                preview.questions.map((q: any) => (
+                preview.questions.map((q) => (
                   <div key={q.id} className="preview-question">
                     <strong>{q.id}:</strong> {q.text} ({q.answerCount} answers)
                   </div>
@@ -104,10 +129,10 @@ export function ExcelUpload({ onQuestionsLoaded }: ExcelUploadProps) {
             </div>
 
             <div className="preview-actions">
-              <button className="control-button" onClick={handleCancel}>
+              <button className="control-button" onClick={handleCancel} disabled={isParsing}>
                 Cancel
               </button>
-              <button className="control-button success" onClick={handleConfirm}>
+              <button className="control-button success" onClick={handleConfirm} disabled={isParsing}>
                 Load Questions
               </button>
             </div>
@@ -117,4 +142,3 @@ export function ExcelUpload({ onQuestionsLoaded }: ExcelUploadProps) {
     </>
   );
 }
-

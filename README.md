@@ -108,6 +108,14 @@ The host controls appear at the bottom of the screen and can be hidden/shown:
 - HTML5 Audio API for sounds
 - CSS animations
 
+## Security Notes (xlsx)
+
+This app parses spreadsheets client-side using the `xlsx` (SheetJS) library. Treat uploaded files as untrusted input:
+
+- Large or malformed files can cause high CPU/memory usage (client-side DoS). Enforce file size limits and avoid accepting arbitrary uploads in public deployments.
+- Spreadsheet contents are user-controlled; only render values as text (no `dangerouslySetInnerHTML`) and validate required columns/types.
+- Macros are not executed by the browser, but formulas/strings may still contain unexpected content; do not reuse parsed data for CSV export or other contexts without additional sanitization.
+
 ## Requirements
 
 - Node.js 20 or newer (enforced via `package.json` engines field)

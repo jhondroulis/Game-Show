@@ -1,5 +1,4 @@
-import { useEffect, useRef } from 'react';
-import { useGame } from '../../context/GameContext';
+import { useGame } from '../../context/useGame';
 import { AnswerSlot } from './AnswerSlot';
 import { ScorePanel } from './ScorePanel';
 import { StrikeIndicator } from './StrikeIndicator';
@@ -9,54 +8,6 @@ import './Board.css';
 export function Board() {
   const { state, dispatch, getCurrentQuestion } = useGame();
   const currentQuestion = getCurrentQuestion();
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  // #region agent log
-  useEffect(() => {
-    if (!containerRef.current) return;
-    const container = containerRef.current;
-    const beforeEl = window.getComputedStyle(container, '::before');
-    const afterEl = window.getComputedStyle(container, '::after');
-    const bgImage = beforeEl.backgroundImage;
-    const bgSize = beforeEl.backgroundSize;
-    const overlayBg = afterEl.background;
-    const beforeZIndex = beforeEl.zIndex;
-    const afterZIndex = afterEl.zIndex;
-    const containerZIndex = window.getComputedStyle(container).zIndex;
-    
-    const logDataA = {location:'Board.tsx:useEffect',message:'CSS computed styles check',data:{bgImage,bgSize,overlayBg,beforeZIndex,afterZIndex,containerZIndex,containerExists:!!container},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'};
-    console.log('[DEBUG A]', logDataA);
-    fetch('http://127.0.0.1:7243/ingest/e022103b-c403-4c64-b9a5-0bf0f125201d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(logDataA)}).catch(()=>{});
-    
-    // Test image load
-    const img = new Image();
-    img.onload = () => {
-      const logDataB = {location:'Board.tsx:img.onload',message:'Image loaded successfully',data:{src:img.src,width:img.width,height:img.height},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'};
-      console.log('[DEBUG B]', logDataB);
-      fetch('http://127.0.0.1:7243/ingest/e022103b-c403-4c64-b9a5-0bf0f125201d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(logDataB)}).catch(()=>{});
-    };
-    img.onerror = () => {
-      const logDataB = {location:'Board.tsx:img.onerror',message:'Image failed to load',data:{src:img.src,error:'Failed to load image'},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'};
-      console.log('[DEBUG B]', logDataB);
-      fetch('http://127.0.0.1:7243/ingest/e022103b-c403-4c64-b9a5-0bf0f125201d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(logDataB)}).catch(()=>{});
-    };
-    img.src = '/family-feud-bg.png';
-    
-    // Check if pseudo-elements exist
-    const testEl = document.createElement('div');
-    testEl.className = 'board-container';
-    document.body.appendChild(testEl);
-    const testBefore = window.getComputedStyle(testEl, '::before');
-    const testAfter = window.getComputedStyle(testEl, '::after');
-    const beforeContent = testBefore.content;
-    const afterContent = testAfter.content;
-    document.body.removeChild(testEl);
-    
-    const logDataC = {location:'Board.tsx:pseudo-check',message:'Pseudo-element content check',data:{beforeContent,afterContent,hasBefore:beforeContent !== 'none',hasAfter:afterContent !== 'none'},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'};
-    console.log('[DEBUG C]', logDataC);
-    fetch('http://127.0.0.1:7243/ingest/e022103b-c403-4c64-b9a5-0bf0f125201d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(logDataC)}).catch(()=>{});
-  }, []);
-  // #endregion
 
   const handleTeamNameChange = (team: 'A' | 'B', name: string) => {
     dispatch({ type: 'SET_TEAM_NAME', payload: { team, name } });
@@ -73,7 +24,7 @@ export function Board() {
   }
 
   return (
-    <div className="board-container" ref={containerRef}>
+    <div className="board-container">
       <div className="board-main">
         <ScorePanel
           team="A"
@@ -188,4 +139,3 @@ export function Board() {
     </div>
   );
 }
-
