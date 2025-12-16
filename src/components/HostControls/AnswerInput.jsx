@@ -8,10 +8,16 @@ export function AnswerInput({ onSubmit, disabled }) {
     setInput(value);
   };
 
+  const trimmedInput = input.trim();
+  const canSubmit = trimmedInput.length >= 3 && !disabled;
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!canSubmit) return;
+
+    onSubmit(trimmedInput);
+
     if (input.trim()) {
-      onSubmit(input.trim());
       setInput('');
     }
   };
@@ -33,11 +39,12 @@ export function AnswerInput({ onSubmit, disabled }) {
         <button 
           type="submit" 
           className="control-button"
-          disabled={disabled || !input.trim()}
+          disabled={!canSubmit}
         >
           Submit
         </button>
       </form>
+      <small className="control-hint">Enter at least 3 characters to submit.</small>
     </div>
   );
 }

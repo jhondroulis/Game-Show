@@ -8,6 +8,31 @@
   display: flex;
   flex-direction: column;
   gap: 15px;
+  position: relative;
+}
+
+.score-panel.is-active {
+  outline: 4px solid rgba(251, 191, 36, 0.95);
+  outline-offset: 4px;
+  box-shadow:
+    0 8px 30px rgba(0, 0, 0, 0.6),
+    0 0 26px rgba(251, 191, 36, 0.6);
+}
+
+.active-badge {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translate(-50%, 10px);
+  background: rgba(251, 191, 36, 0.95);
+  color: #111827;
+  font-weight: 900;
+  font-size: 12px;
+  letter-spacing: 1px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+  pointer-events: none;
 }
 
 .score-panel.team-a {

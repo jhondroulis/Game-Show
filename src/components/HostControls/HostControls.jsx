@@ -119,17 +119,23 @@ export function HostControls() {
 
               {state.phase === 'steal' && (
                 <React.Fragment>
-                  <button 
-                    className={`control-button team-${state.stealOriginTeam.toLowerCase()}`}
-                    onClick={() => handleAwardPot(state.stealOriginTeam)}
+                  <button
+                    className="control-button team-a"
+                    onClick={() => handleAwardPot('A')}
                   >
-                    Award to {state.teamNames[state.stealOriginTeam]} (Steal Failed)
+                    Award to {state.teamNames.A}{' '}
+                    {state.activeTeam === 'A'
+                      ? '(Steal Success)'
+                      : '(Steal Failed)'}
                   </button>
-                  <button 
-                    className={`control-button team-${state.activeTeam.toLowerCase()}`}
-                    onClick={() => handleAwardPot(state.activeTeam)}
+                  <button
+                    className="control-button team-b"
+                    onClick={() => handleAwardPot('B')}
                   >
-                    Award to {state.teamNames[state.activeTeam]} (Steal Success)
+                    Award to {state.teamNames.B}{' '}
+                    {state.activeTeam === 'B'
+                      ? '(Steal Success)'
+                      : '(Steal Failed)'}
                   </button>
                 </React.Fragment>
               )}
@@ -137,10 +143,16 @@ export function HostControls() {
               {state.phase === 'playing' && (
                 <React.Fragment>
                   <button 
-                    className={`control-button team-${state.activeTeam.toLowerCase()}`}
-                    onClick={() => handleAwardPot(state.activeTeam)}
+                    className="control-button team-a"
+                    onClick={() => handleAwardPot('A')}
                   >
-                    Award Pot to {state.teamNames[state.activeTeam]}
+                    Award Pot to {state.teamNames.A}
+                  </button>
+                  <button 
+                    className="control-button team-b"
+                    onClick={() => handleAwardPot('B')}
+                  >
+                    Award Pot to {state.teamNames.B}
                   </button>
                 </React.Fragment>
               )}

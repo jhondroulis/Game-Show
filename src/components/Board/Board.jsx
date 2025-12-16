@@ -32,6 +32,11 @@ export function Board() {
           teamName={state.teamNames.A}
           score={state.teamTotals.A}
           isSetup={state.phase === 'setup'}
+          isActive={
+            state.phase !== 'setup' &&
+            (state.phase === 'playing' || state.phase === 'steal') &&
+            state.activeTeam === 'A'
+          }
           onNameChange={(name) => handleTeamNameChange('A', name)}
         />
 
@@ -134,6 +139,11 @@ export function Board() {
           teamName={state.teamNames.B}
           score={state.teamTotals.B}
           isSetup={state.phase === 'setup'}
+          isActive={
+            state.phase !== 'setup' &&
+            (state.phase === 'playing' || state.phase === 'steal') &&
+            state.activeTeam === 'B'
+          }
           onNameChange={(name) => handleTeamNameChange('B', name)}
         />
       </div>
