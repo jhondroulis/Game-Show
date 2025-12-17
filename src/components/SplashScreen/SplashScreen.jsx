@@ -1,44 +1,16 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import './SplashScreen.css';
 
 export function SplashScreen({ leaving, onStart }) {
   const videoRef = useRef(null);
   const [hasEnded, setHasEnded] = useState(false);
-  const [muted, setMuted] = useState(false);
+  const [muted, setMuted] = useState(true);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   const className = useMemo(() => {
     return leaving ? 'splash splash--leaving' : 'splash';
   }, [leaving]);
-
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    let cancelled = false;
-
-    const start = async () => {
-      video.muted = false;
-      video.volume = 1;
-      try {
-        await video.play();
-        if (!cancelled) setMuted(false);
-      } catch (err) {
-        video.muted = true;
-        try {
-          await video.play();
-        } catch (innerErr) {
-          // If playback fails entirely, the "Let's play!" fallback still works.
-        }
-        if (!cancelled) setMuted(true);
-      }
-    };
-
-    start();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
 
   const toggleAudio = async () => {
     const video = videoRef.current;
@@ -48,11 +20,24 @@ export function SplashScreen({ leaving, onStart }) {
     video.muted = nextMuted;
     if (!nextMuted) video.volume = 1;
     setMuted(nextMuted);
+  };
+
+  const handlePlayPause = async () => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (isPlaying) {
+      video.pause();
+      setIsPlaying(false);
+      return;
+    }
 
     try {
       await video.play();
+      setIsPlaying(true);
+      setHasEnded(false);
     } catch (err) {
-      // Ignore; some browsers still require additional gestures.
+      // If playback fails, leave the splash idle; host can try again.
     }
   };
 
@@ -65,7 +50,10 @@ export function SplashScreen({ leaving, onStart }) {
         playsInline
         muted={muted}
         preload="auto"
-        onEnded={() => setHasEnded(true)}
+        onEnded={() => {
+          setHasEnded(true);
+          setIsPlaying(false);
+        }}
         onError={() => setHasEnded(true)}
       />
       <div className="splash__scrim" aria-hidden="true" />
@@ -75,6 +63,13 @@ export function SplashScreen({ leaving, onStart }) {
         </button>
       </div>
       <div className="splash__controls">
+        <button
+          className="splash__playPause"
+          type="button"
+          onClick={handlePlayPause}
+        >
+          {isPlaying ? 'Pause intro' : hasEnded ? 'Replay intro' : 'Play intro'}
+        </button>
         {hasEnded ? (
           <button className="splash__start" type="button" onClick={onStart}>
             Let&apos;s play!

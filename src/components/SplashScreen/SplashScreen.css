@@ -47,6 +47,24 @@
   padding: 0 20px;
 }
 
+.splash__playPause {
+  pointer-events: auto;
+  appearance: none;
+  border: 0;
+  border-radius: 999px;
+  padding: 10px 22px;
+  margin-right: 14px;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.95);
+  background: rgba(0, 0, 0, 0.5);
+  box-shadow:
+    0 14px 40px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+}
+
 .splash__topRight {
   position: absolute;
   top: max(16px, env(safe-area-inset-top));
