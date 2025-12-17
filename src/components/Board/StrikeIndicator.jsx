@@ -18,3 +18,5 @@ StrikeIndicator.propTypes = {
   strikes: PropTypes.number.isRequired,
 };
 
+
+
